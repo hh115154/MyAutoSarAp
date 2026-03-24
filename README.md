@@ -1,6 +1,6 @@
 # MyAutoSarAp
 
-基于 **AUTOSAR Adaptive Platform（AP）R21-11** 规范的应用开发框架。
+基于 **AUTOSAR Adaptive Platform（AP）R25-11** 规范的应用开发框架。
 
 ## 项目结构
 
@@ -110,12 +110,16 @@ ctest --output-on-failure
 
 ## 规范参考
 
-- AUTOSAR AP R21-11
-- AUTOSAR_SWS_CommunicationManagement
-- AUTOSAR_SWS_ExecutionManagement
-- AUTOSAR_SWS_LogAndTrace
-- AUTOSAR_SWS_Diagnostics
-- AUTOSAR_SWS_Persistency
+- AUTOSAR AP R25-11
+- AUTOSAR_SWS_CommunicationManagement (R25-11)
+- AUTOSAR_SWS_ExecutionManagement (R25-11)
+- AUTOSAR_SWS_LogAndTrace (R25-11)
+- AUTOSAR_SWS_Diagnostics (R25-11)
+- AUTOSAR_SWS_Persistency (R25-11)
+- AUTOSAR_SWS_Cryptography (R25-11)
+- AUTOSAR_SWS_NetworkManagement (R25-11)
+- AUTOSAR_SWS_IdentityAndAccessManagement (R25-11)
+- AUTOSAR_SWS_TimeSynchronization (R25-11)
 
 ## License
 

@@ -2,8 +2,9 @@
  * @file diag_error_domain.h
  * @brief ara::diag 诊断错误域
  *
- * 符合 AUTOSAR AP R21-11 规范
+ * 符合 AUTOSAR AP R25-11 规范
  * Functional Cluster: Diagnostics
+ * Ref: AUTOSAR_SWS_Diagnostics (R25-11)
  */
 
 #ifndef ARA_DIAG_DIAG_ERROR_DOMAIN_H

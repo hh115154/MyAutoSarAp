@@ -2,8 +2,9 @@
  * @file key_value_storage.h
  * @brief ara::per 持久化存储 - KV 存储
  *
- * 符合 AUTOSAR AP R21-11 规范
+ * 符合 AUTOSAR AP R25-11 规范
  * Functional Cluster: Persistency
+ * Ref: AUTOSAR_SWS_Persistency (R25-11)
  */
 
 #ifndef ARA_PER_KEY_VALUE_STORAGE_H

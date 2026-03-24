@@ -2,8 +2,9 @@
  * @file proxy_base.h
  * @brief ara::com Proxy 基类
  *
- * 符合 AUTOSAR AP R21-11 规范
+ * 符合 AUTOSAR AP R25-11 规范
  * Service Consumer 端基类，所有 Proxy 类从此继承
+ * Ref: AUTOSAR_SWS_CommunicationManagement (R25-11)
  */
 
 #ifndef ARA_COM_PROXY_BASE_H

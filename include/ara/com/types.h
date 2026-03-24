@@ -2,8 +2,9 @@
  * @file types.h
  * @brief ara::com 基础类型定义
  *
- * 符合 AUTOSAR AP R21-11 规范
+ * 符合 AUTOSAR AP R25-11 规范
  * Functional Cluster: Communication Management
+ * Ref: AUTOSAR_SWS_CommunicationManagement (R25-11)
  */
 
 #ifndef ARA_COM_TYPES_H

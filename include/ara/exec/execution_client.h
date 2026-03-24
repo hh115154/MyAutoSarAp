@@ -2,8 +2,9 @@
  * @file execution_client.h
  * @brief ara::exec 执行管理客户端
  *
- * 符合 AUTOSAR AP R21-11 规范
+ * 符合 AUTOSAR AP R25-11 规范
  * Functional Cluster: Execution Management
+ * Ref: AUTOSAR_SWS_ExecutionManagement (R25-11)
  */
 
 #ifndef ARA_EXEC_EXECUTION_CLIENT_H

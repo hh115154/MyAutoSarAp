@@ -2,8 +2,9 @@
  * @file logger.h
  * @brief ara::log 日志接口
  *
- * 符合 AUTOSAR AP R21-11 规范
+ * 符合 AUTOSAR AP R25-11 规范
  * Functional Cluster: Logging and Tracing
+ * Ref: AUTOSAR_SWS_LogAndTrace (R25-11)
  */
 
 #ifndef ARA_LOG_LOGGER_H

@@ -2,8 +2,9 @@
  * @file skeleton_base.h
  * @brief ara::com Skeleton 基类
  *
- * 符合 AUTOSAR AP R21-11 规范
+ * 符合 AUTOSAR AP R25-11 规范
  * Service Provider 端基类，所有 Skeleton 类从此继承
+ * Ref: AUTOSAR_SWS_CommunicationManagement (R25-11)
  */
 
 #ifndef ARA_COM_SKELETON_BASE_H
