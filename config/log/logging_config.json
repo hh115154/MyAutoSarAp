@@ -1,0 +1,15 @@
+{
+  "logging": {
+    "appId": "MSAP",
+    "appDescription": "MyAutoSarAp Application",
+    "defaultLogLevel": "kInfo",
+    "logMode": ["kConsole", "kFile"],
+    "logFilePath": "/var/log/MyAutoSarAp/app.log",
+    "contexts": [
+      { "ctxId": "MAIN", "description": "Main context",         "level": "kDebug" },
+      { "ctxId": "COM",  "description": "Communication context","level": "kInfo"  },
+      { "ctxId": "DIAG", "description": "Diagnostics context",  "level": "kWarn"  },
+      { "ctxId": "PER",  "description": "Persistency context",  "level": "kInfo"  }
+    ]
+  }
+}

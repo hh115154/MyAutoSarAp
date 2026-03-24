@@ -1,0 +1,34 @@
+{
+  "manifest": {
+    "version": "1.0.0",
+    "applicationName": "MyAutoSarAp",
+    "executionManagement": {
+      "processName": "MyAutoSarAp",
+      "startupConfig": {
+        "startupOption": "kLaunchOnBoot",
+        "timingConstraints": {
+          "startupTimeout": 5000
+        }
+      },
+      "functionGroups": [
+        {
+          "name": "MachineFG",
+          "initialState": "Off",
+          "states": ["Off", "Startup", "Running", "Shutdown"]
+        }
+      ]
+    },
+    "resourceGroups": {
+      "cpuUsage": {
+        "softLimit": 50,
+        "hardLimit": 80,
+        "unit": "percent"
+      },
+      "memoryUsage": {
+        "softLimit": 256,
+        "hardLimit": 512,
+        "unit": "MB"
+      }
+    }
+  }
+}

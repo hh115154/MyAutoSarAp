@@ -1,0 +1,70 @@
+# Build output
+build/
+out/
+dist/
+*.o
+*.a
+*.so
+*.so.*
+*.dylib
+*.dll
+*.exe
+*.elf
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+*.cmake
+!cmake/*.cmake
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Compiler output
+*.d
+*.pch
+*.gch
+
+# Debug / profiling
+*.dSYM/
+*.su
+*.idb
+*.pdb
+core
+core.*
+
+# Test output
+Testing/
+test_results/
+*.gcov
+*.gcda
+*.gcno
+
+# AutoSAR generated files
+gen/
+generated/
+arxml_out/
+
+# Logs
+*.log
+logs/
+
+# Conan / vcpkg package manager
+.conan/
+vcpkg_installed/
+conanbuildinfo.*
+conaninfo.txt
+
+# Python (scripts)
+__pycache__/
+*.pyc
+*.pyo
+.env
