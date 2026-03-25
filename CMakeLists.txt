@@ -46,10 +46,20 @@ add_subdirectory(src)
 # ==============================================================
 # 单元测试（可选，需要 GTest）
 # ==============================================================
-option(BUILD_TESTS "Build unit tests" OFF)
+option(BUILD_TESTS    "Build unit tests"                    OFF)
+option(ENABLE_COVERAGE "Enable code coverage (Debug only)"  OFF)
+
 if(BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests)
+endif()
+
+# 覆盖率汇总信息
+if(ENABLE_COVERAGE)
+    if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+        message(WARNING "ENABLE_COVERAGE is set but CMAKE_BUILD_TYPE is not Debug — coverage data may be unreliable.")
+    endif()
+    message(STATUS "Code coverage enabled. Use scripts/run_coverage.sh to generate the HTML report.")
 endif()
 
 # ==============================================================

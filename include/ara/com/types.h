@@ -26,6 +26,9 @@ public:
     bool operator==(const InstanceIdentifier& other) const {
         return value_ == other.value_;
     }
+    bool operator!=(const InstanceIdentifier& other) const {
+        return value_ != other.value_;
+    }
 
 private:
     std::string value_;
