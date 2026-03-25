@@ -1,0 +1,1 @@
+genhtml /Users/hh/WorkBuddy/MyAutoSarAp/build_coverage/coverage.info --output-directory /Users/hh/WorkBuddy/MyAutoSarAp/coverage_report --title 'MyAutoSarAp Coverage (AUTOSAR AP R25-11)' --legend --show-details --prefix /Users/hh/WorkBuddy/MyAutoSarAp --ignore-errors inconsistent,unused,empty,format,mismatch,category --quiet

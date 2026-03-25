@@ -34,6 +34,12 @@ function(add_ara_test TEST_NAME SOURCE_FILE)
             ara_com
             ara_diag
             ara_per
+            ara_crypto
+            ara_nm
+            ara_tsync
+            ara_iam
+            ara_phm
+            ara_sm
     )
 
     target_include_directories(${TEST_NAME}
@@ -52,9 +58,13 @@ function(add_ara_test TEST_NAME SOURCE_FILE)
 endfunction()
 
 # ==============================================================
-# 注册测试用例
+# 注册测试用例（原有 4 个 + 新增 3 个）
 # ==============================================================
-add_ara_test(test_ara_log  unit/test_ara_log.cpp)
-add_ara_test(test_ara_exec unit/test_ara_exec.cpp)
-add_ara_test(test_ara_com  unit/test_ara_com.cpp)
-add_ara_test(test_ara_diag unit/test_ara_diag.cpp)
+add_ara_test(test_ara_log    unit/test_ara_log.cpp)
+add_ara_test(test_ara_exec   unit/test_ara_exec.cpp)
+add_ara_test(test_ara_com    unit/test_ara_com.cpp)
+add_ara_test(test_ara_diag   unit/test_ara_diag.cpp)
+add_ara_test(test_ara_phm    unit/test_ara_phm.cpp)
+add_ara_test(test_ara_sm     unit/test_ara_sm.cpp)
+add_ara_test(test_ara_crypto unit/test_ara_crypto.cpp)
+add_ara_test(test_ara_nm     unit/test_ara_nm.cpp)

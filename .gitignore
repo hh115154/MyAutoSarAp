@@ -1,5 +1,8 @@
 # Build output
 build/
+build_new/
+build_coverage/
+build_trial/
 out/
 dist/
 *.o

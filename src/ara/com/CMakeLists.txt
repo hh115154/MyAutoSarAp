@@ -1,4 +1,7 @@
 # src/ara/com/CMakeLists.txt
-# ara::com 通常由中间件厂商提供实现，此处为占位
-add_library(ara_com INTERFACE)
-target_include_directories(ara_com INTERFACE ${CMAKE_SOURCE_DIR}/include)
+add_library(ara_com STATIC someip_binding.cpp)
+target_include_directories(ara_com PUBLIC ${CMAKE_SOURCE_DIR}/include)
+if(ENABLE_COVERAGE AND CMAKE_BUILD_TYPE STREQUAL "Debug")
+    target_compile_options(ara_com PRIVATE --coverage -fprofile-arcs -ftest-coverage)
+    target_link_options(ara_com PUBLIC --coverage)
+endif()
