@@ -1,31 +1,33 @@
 /**
  * @file main.cpp
- * @brief Adaptive Application 入口
+ * @brief AUTOSAR AP R25-11 — Adaptive Application 入口
  *
- * AutoSAR AP 应用标准启动流程：
- *   1. 初始化日志系统
- *   2. 初始化通信中间件
- *   3. 上报 ExecutionState::kRunning
- *   4. 进入主循环
- *   5. 捕获终止信号，优雅退出
+ * 启动流程（SOC-SW-001 §5.2）：
+ *   1. ara::log 初始化
+ *   2. VehicleSignalSWC 启动（SOME/IP Consumer，订阅 MCU UDP:30501）
+ *   3. ara::exec 上报 kRunning
+ *   4. 100ms 主循环：SWC MainFunction
+ *   5. 优雅退出（SIGINT/SIGTERM）
+ *
+ * 本机仿真架构：
+ *   MyAutoSarCP(MCU进程) ─UDP:30501→ MyAutoSarAp(SOC进程)
+ *   SOME/IP VehicleSignalService(0x1001) Notification 10ms 周期
  */
 
 #include "ara/log/logger.h"
 #include "ara/exec/execution_client.h"
+#include "ara/app/vehicle_signal_swc.h"
 
 #include <csignal>
 #include <atomic>
 #include <thread>
 #include <chrono>
+#include <cstdio>
 
 /// 全局退出标志
 static std::atomic<bool> g_running{true};
 
-/**
- * @brief 信号处理器（SIGTERM / SIGINT）
- */
-static void SignalHandler(int signal) {
-    (void)signal;
+static void SignalHandler(int /*sig*/) {
     g_running.store(false);
 }
 
@@ -37,13 +39,20 @@ int main(int argc, char* argv[]) {
     // Step 1: 初始化日志系统
     // =========================================================
     ara::log::InitLogging(
-        "MSAP",                          // App ID（4字符）
-        "MyAutoSarAp Main Application",  // App 描述
-        ara::log::LogLevel::kDebug,      // 默认日志级别
-        ara::log::LogMode::kConsole      // 日志输出模式
+        "MSAP",
+        "MyAutoSarAp — AUTOSAR AP R25-11 (SOME/IP Consumer)",
+        ara::log::LogLevel::kDebug,
+        ara::log::LogMode::kConsole
     );
 
     auto& logger = ara::log::CreateLogger("MAIN", "Main context");
+
+    printf("==============================================\n");
+    printf("  MyAutoSarAp  —  AUTOSAR AP R25-11\n");
+    printf("  SOME/IP VehicleSignalService Consumer\n");
+    printf("  Listening UDP 127.0.0.1:30501\n");
+    printf("==============================================\n\n");
+
     logger.LogInfo() << "MyAutoSarAp starting...";
 
     // =========================================================
@@ -53,17 +62,16 @@ int main(int argc, char* argv[]) {
     std::signal(SIGINT,  SignalHandler);
 
     // =========================================================
-    // Step 3: 初始化各功能模块（在此处添加）
+    // Step 3: 启动 VehicleSignalSWC（ara::com Proxy）
     // =========================================================
-    // TODO: 初始化 ara::com 通信
-    // TODO: 初始化应用业务模块
+    ara::app::VehicleSignalSwc vehicleSignalSwc;
+    vehicleSignalSwc.Start();
 
     // =========================================================
     // Step 4: 上报 ExecutionState::kRunning
-    //         通知 Execution Management 应用已就绪
     // =========================================================
-    ara::exec::ExecutionClient exec_client;
-    auto result = exec_client.ReportExecutionState(
+    ara::exec::ExecutionClient execClient;
+    auto result = execClient.ReportExecutionState(
         ara::exec::ExecutionState::kRunning);
 
     if (result != ara::exec::ExecErrc::kSuccess) {
@@ -71,24 +79,23 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    logger.LogInfo() << "Application running. Waiting for termination signal...";
+    logger.LogInfo()
+        << "Application running — waiting for SOME/IP data from MCU (Ctrl+C to stop)";
 
     // =========================================================
-    // Step 5: 主循环
+    // Step 5: 主循环（100ms）
     // =========================================================
     while (g_running.load()) {
-        // TODO: 处理业务逻辑
+        vehicleSignalSwc.MainFunction_100ms();
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     // =========================================================
     // Step 6: 优雅退出
     // =========================================================
-    logger.LogInfo() << "Termination signal received. Shutting down...";
-
-    // TODO: 停止 ara::com 服务
-    // TODO: 清理资源
-
+    logger.LogInfo() << "Shutdown requested...";
+    vehicleSignalSwc.Stop();
     logger.LogInfo() << "MyAutoSarAp stopped.";
+
     return 0;
 }

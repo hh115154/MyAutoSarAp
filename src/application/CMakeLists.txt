@@ -7,6 +7,7 @@ target_link_libraries(MyAutoSarAp
         ara_exec
         ara_log
         ara_com
+        ara_app
         ara_diag
         ara_per
 )

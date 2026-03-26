@@ -3,6 +3,9 @@ build/
 build_new/
 build_coverage/
 build_trial/
+build_someip/
+build_test/
+build_ci/
 out/
 dist/
 *.o

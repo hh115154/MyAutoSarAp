@@ -1,5 +1,8 @@
 # src/ara/com/CMakeLists.txt
-add_library(ara_com STATIC someip_binding.cpp)
+add_library(ara_com STATIC
+    someip_binding.cpp
+    vehicle_signal_proxy.cpp
+)
 target_include_directories(ara_com PUBLIC ${CMAKE_SOURCE_DIR}/include)
 if(ENABLE_COVERAGE AND CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_compile_options(ara_com PRIVATE --coverage -fprofile-arcs -ftest-coverage)
