@@ -98,7 +98,31 @@ void VehicleSignalSwc::Start()
             impl_->lastE2eCounter = sample->e2eCounter;
             impl_->samplesReceived.fetch_add(1u);
 
-            /* ── 结构化 JSON 日志（每帧输出，monitor_server 解析此行采集数据）─ */
+            uint64_t n = impl_->samplesReceived.load();
+
+            /* ── 1. SOC 订阅层收到 MCU 原始数据（每 10 帧一次）── */
+            if (n % 10u == 1u) {
+                printf("[SOC_LOG] {\"level\":\"INFO\",\"ctx\":\"VSIG\","
+                       "\"msg\":\"SIGNAL_DISPATCH\","
+                       "\"note\":\"SOC received MCU SOME/IP sample via VehicleSignalProxy\","
+                       "\"session\":%d,\"speed\":%.2f,\"rpm\":%.1f,"
+                       "\"steer\":%.2f,\"brake\":%d,\"door\":%d,"
+                       "\"fuel\":%.2f,\"e2e_crc\":%d,\"e2e_cnt\":%d,"
+                       "\"rx_total\":%llu}\n",
+                       (int)sample->sessionId,
+                       sample->vehicleSpeedKmh,
+                       sample->engineRpm,
+                       sample->steeringAngleDeg,
+                       sample->brakePedal ? 1 : 0,
+                       (int)sample->doorStatus,
+                       sample->fuelLevelPct,
+                       (int)sample->e2eCrc,
+                       (int)sample->e2eCounter,
+                       (unsigned long long)n);
+                fflush(stdout);
+            }
+
+            /* ── 2. 结构化 JSON 日志（每帧输出，monitor_server 解析此行采集数据）─ */
             /* 格式: [AP_SIGNAL_JSON] {"speed":xx,"rpm":xx,"brake":x,
              *        "steer":xx,"door":x,"fuel":xx,"e2e_ok":1,
              *        "e2e_crc":xx,"e2e_cnt":xx,"session":xx} */
@@ -125,8 +149,28 @@ void VehicleSignalSwc::Start()
                    (int)sample->sessionId);
             fflush(stdout);
 
+            /* ── 3. AP 发往 HMI 的数据记录（每 10 帧一次）─────────── */
+            /* 说明：SOC 通过 stdout pipe → monitor_server → WebSocket 发送给 HMI */
+            if (n % 10u == 1u) {
+                printf("[SOC_LOG] {\"level\":\"INFO\",\"ctx\":\"VSIG\","
+                       "\"msg\":\"AP_HMI_SEND\","
+                       "\"note\":\"SOC sent signal to HMI via stdout pipe → monitor_server → WebSocket ws://8765\","
+                       "\"proto\":\"stdout pipe + WebSocket\","
+                       "\"session\":%d,\"speed\":%.2f,\"rpm\":%.1f,"
+                       "\"steer\":%.2f,\"brake\":%d,\"door\":%d,"
+                       "\"fuel\":%.2f,\"tx_total\":%llu}\n",
+                       (int)sample->sessionId,
+                       sample->vehicleSpeedKmh,
+                       sample->engineRpm,
+                       sample->steeringAngleDeg,
+                       sample->brakePedal ? 1 : 0,
+                       (int)sample->doorStatus,
+                       sample->fuelLevelPct,
+                       (unsigned long long)n);
+                fflush(stdout);
+            }
+
             // 每 100 帧输出一条 SOC_LOG（实时日志面板可见）
-            uint64_t n = impl_->samplesReceived.load();
             if (n % 100u == 1u) {
                 printf("[SOC_LOG] {\"level\":\"INFO\",\"ctx\":\"VSIG\","
                        "\"msg\":\"SOMEIP_RX\","

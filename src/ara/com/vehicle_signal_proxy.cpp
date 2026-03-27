@@ -201,6 +201,18 @@ void VehicleSignalProxy::RxThreadFunc()
             std::lock_guard<std::mutex> lk(statsMtx_);
             stats_.rxPackets++;
             stats_.rxBytes += static_cast<uint64_t>(n);
+
+            /* 每 10 帧输出一条原始接收日志，记录收到 MCU 发来的 SOME/IP 帧 */
+            if (stats_.rxPackets % 10u == 1u) {
+                printf("[SOC_LOG] {\"level\":\"INFO\",\"ctx\":\"COM\","
+                       "\"msg\":\"SOMEIP_RAW_RX\","
+                       "\"src\":\"127.0.0.1:40501\",\"dst_port\":30501,"
+                       "\"proto\":\"SOME/IP over UDP\","
+                       "\"frame_bytes\":%d,\"rx_total\":%llu}\n",
+                       (int)n,
+                       (unsigned long long)stats_.rxPackets);
+                fflush(stdout);
+            }
         }
 
         if (!ParseAndDispatch(buf, static_cast<std::size_t>(n))) {
