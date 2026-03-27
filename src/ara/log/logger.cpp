@@ -7,6 +7,8 @@
 #include <iostream>
 #include <unordered_map>
 #include <mutex>
+#include <cstdio>
+#include <ctime>
 
 namespace ara {
 namespace log {
@@ -20,20 +22,34 @@ static std::string g_app_id;
 
 // -------------------------------------------------------
 // LogStream 析构时输出日志
+// 格式：[SOC_LOG] {"level":"INFO","ctx":"VSIG","msg":"..."}
 // -------------------------------------------------------
 LogStream::~LogStream() {
-    const char* level_str = "";
+    const char* level_str = "INFO";
     switch (level_) {
         case LogLevel::kFatal:   level_str = "FATAL";   break;
         case LogLevel::kError:   level_str = "ERROR";   break;
-        case LogLevel::kWarn:    level_str = "WARN ";   break;
-        case LogLevel::kInfo:    level_str = "INFO ";   break;
+        case LogLevel::kWarn:    level_str = "WARN";    break;
+        case LogLevel::kInfo:    level_str = "INFO";    break;
         case LogLevel::kDebug:   level_str = "DEBUG";   break;
         case LogLevel::kVerbose: level_str = "VERBOSE"; break;
-        default:                 level_str = "?????";   break;
+        default:                 level_str = "INFO";    break;
     }
-    std::cout << "[" << level_str << "][" << ctx_id_ << "] "
-              << stream_.str() << std::endl;
+
+    // 对消息中的双引号转义
+    std::string msg = stream_.str();
+    std::string escaped;
+    escaped.reserve(msg.size() + 8);
+    for (char c : msg) {
+        if (c == '"')  { escaped += "\\\""; }
+        else if (c == '\\') { escaped += "\\\\"; }
+        else           { escaped += c; }
+    }
+
+    // 结构化 JSON 输出，monitor_server 通过 [SOC_LOG] 前缀识别
+    printf("[SOC_LOG] {\"level\":\"%s\",\"ctx\":\"%s\",\"msg\":\"%s\"}\n",
+           level_str, ctx_id_.c_str(), escaped.c_str());
+    fflush(stdout);
 }
 
 // -------------------------------------------------------
@@ -55,7 +71,10 @@ void InitLogging(const std::string& app_id,
     (void)level;
     (void)log_mode;
     g_app_id = app_id;
-    std::cout << "[ara::log] Logging initialized. AppId=" << app_id << std::endl;
+    printf("[SOC_LOG] {\"level\":\"INFO\",\"ctx\":\"SYS\","
+           "\"msg\":\"ara::log initialized\",\"app_id\":\"%s\"}\n",
+           app_id.c_str());
+    fflush(stdout);
 }
 
 Logger& CreateLogger(const std::string& ctx_id,
