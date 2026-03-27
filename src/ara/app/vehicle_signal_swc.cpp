@@ -84,7 +84,34 @@ void VehicleSignalSwc::Start()
             impl_->lastE2eCounter = sample->e2eCounter;
             impl_->samplesReceived.fetch_add(1u);
 
-            // 每 100 帧详细打印一次（避免刷屏）
+            /* ── 结构化 JSON 日志（每帧输出，monitor_server 解析此行采集数据）─ */
+            /* 格式: [AP_SIGNAL_JSON] {"speed":xx,"rpm":xx,"brake":x,
+             *        "steer":xx,"door":x,"fuel":xx,"e2e_ok":1,
+             *        "e2e_crc":xx,"e2e_cnt":xx,"session":xx} */
+            printf("[AP_SIGNAL_JSON] {"
+                   "\"speed\":%.2f,"
+                   "\"rpm\":%.1f,"
+                   "\"brake\":%d,"
+                   "\"steer\":%.2f,"
+                   "\"door\":%d,"
+                   "\"fuel\":%.2f,"
+                   "\"e2e_ok\":1,"
+                   "\"e2e_crc\":%d,"
+                   "\"e2e_cnt\":%d,"
+                   "\"session\":%d"
+                   "}\n",
+                   sample->vehicleSpeedKmh,
+                   sample->engineRpm,
+                   sample->brakePedal ? 1 : 0,
+                   sample->steeringAngleDeg,
+                   (int)sample->doorStatus,
+                   sample->fuelLevelPct,
+                   (int)sample->e2eCrc,
+                   (int)sample->e2eCounter,
+                   (int)sample->sessionId);
+            fflush(stdout);
+
+            // 每 100 帧 ara::log 详细打印一次（避免刷屏）
             if (impl_->samplesReceived.load() % 100u == 1u) {
                 impl_->logger.LogInfo()
                     << "[SOMEIP RX] SID=0x1001"
